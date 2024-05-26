@@ -25,15 +25,16 @@ public class GameScreen implements Screen {
 		this.game = game;
         this.batch = game.getBatch();
         this.font = game.getFont();
-		  // load the images for the droplet and the bucket, 64x64 pixels each 	     
-		  Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
+		  // load the images for the droplet and the bucket, 64x64 pixels each 	  
+        //cambiado de .ogg a .mp3
+		  Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.mp3"));
 		  tarro = new Tarro(new Texture(Gdx.files.internal("bucket.png")),hurtSound);
          
 	      // load the drop sound effect and the rain background "music" 
          Texture gota = new Texture(Gdx.files.internal("drop.png"));
          Texture gotaMala = new Texture(Gdx.files.internal("dropBad.png"));
-         
-         Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
+         //cambiado de .wav a .mp3
+         Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.mp3"));
         
 	     Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
          lluvia = new Lluvia(gota, gotaMala, dropSound, rainMusic);
@@ -65,7 +66,7 @@ public class GameScreen implements Screen {
 		
 		if (!tarro.estaHerido()) {
 			// movimiento del tarro desde teclado
-	        tarro.actualizarMovimiento();        
+	        tarro.actualizar();        
 			// caida de la lluvia 
 	       if (!lluvia.actualizarMovimiento(tarro)) {
 	    	  //actualizar HigherScore
