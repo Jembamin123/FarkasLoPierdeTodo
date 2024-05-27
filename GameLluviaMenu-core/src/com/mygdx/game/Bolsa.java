@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
-public class Tarro implements Actualizable {
+public class Bolsa implements Actualizable {
     private Rectangle bucket;
     private Texture bucketImage;
     private Sound sonidoHerido;
@@ -19,7 +19,7 @@ public class Tarro implements Actualizable {
     private int tiempoHeridoMax = 50;
     private int tiempoHerido;
 
-    public Tarro(Texture tex, Sound ss) {
+    public Bolsa(Texture tex, Sound ss) {
         bucketImage = tex;
         sonidoHerido = ss;
     }
@@ -67,11 +67,30 @@ public class Tarro implements Actualizable {
 
     @Override
     public void actualizar() {
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) bucket.x -= velx * Gdx.graphics.getDeltaTime();
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) bucket.x += velx * Gdx.graphics.getDeltaTime();
-        if (bucket.x < 0) bucket.x = 0;
-        if (bucket.x > 800 - 64) bucket.x = 800 - 64;
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            bucket.x -= velx * Gdx.graphics.getDeltaTime();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            bucket.x += velx * Gdx.graphics.getDeltaTime();
+        }
+ 
+        if (bucket.x < 0) {
+            bucket.x = 0;
+        }
+        if (bucket.x > 800 - 64) {
+            bucket.x = 800 - 64;
+        }
     }
+    public void actualizarDibujo(SpriteBatch batch) {
+        if (!herido) {
+            batch.draw(bucketImage, bucket.x, bucket.y);
+        } else {
+            batch.draw(bucketImage, bucket.x, bucket.y + MathUtils.random(-5, 5));
+            tiempoHerido--;
+            if (tiempoHerido <= 0) herido = false;
+        }
+    }
+
 
     public void destruir() {
         bucketImage.dispose();

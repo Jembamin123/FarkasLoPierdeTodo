@@ -4,11 +4,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-public abstract class Gota implements Actualizable {
+public abstract class FallingObject implements Actualizable {
     protected float x, y, width, height;
     protected Texture texture;
 
-    public Gota(Texture texture, float x, float y, float width, float height) {
+    public FallingObject(Texture texture, float x, float y, float width, float height) {
         this.texture = texture;
         this.x = x;
         this.y = y;
@@ -26,30 +26,4 @@ public abstract class Gota implements Actualizable {
         Rectangle gotaRect = new Rectangle(x, y, width, height);
         return gotaRect.overlaps(rect);
     }
-
-    public float getX() {
-        return x;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    public float getWidth() {
-        return width;
-    }
-
-    public float getHeight() {
-        return height;
-    }
-
-	protected abstract Texture getTexture();
 }

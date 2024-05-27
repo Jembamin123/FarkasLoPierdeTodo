@@ -11,115 +11,99 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameScreen implements Screen {
-	final GameLluviaMenu game;
+    final GameLluviaMenu game;
     private OrthographicCamera camera;
-	private SpriteBatch batch;	   
-	private BitmapFont font;
-	private Tarro tarro;
-	private Lluvia lluvia;
-	Texture textureFondo = new Texture(Gdx.files.internal("fondo.png"));
+    private SpriteBatch batch;
+    private BitmapFont font;
+    private Bolsa bolsa;
+    private Lluvia lluvia;
+    Texture textureFondo = new Texture(Gdx.files.internal("fondo.png"));
 
-	   
-	//boolean activo = true;
-
-	public GameScreen(final GameLluviaMenu game) {
-		this.game = game;
+    public GameScreen(final GameLluviaMenu game) {
+        this.game = game;
         this.batch = game.getBatch();
         this.font = game.getFont();
-		  // load the images for the droplet and the bucket, 64x64 pixels each 	  
-        //cambiado de .ogg a .mp3
-		  Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.mp3"));
-		  tarro = new Tarro(new Texture(Gdx.files.internal("bucket.png")),hurtSound);
-         
-	      // load the drop sound effect and the rain background "music" 
-         Texture gota = new Texture(Gdx.files.internal("drop.png"));
-         Texture gotaMala = new Texture(Gdx.files.internal("dropBad.png"));
-         Texture gotaMultiplicadora = new Texture(Gdx.files.internal("bonus.png"));
-         //cambiado de .wav a .mp3
-         Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.mp3"));
-        
-	     Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-         Music multiplicadorMusic = Gdx.audio.newMusic(Gdx.files.internal("multiplicador.mp3"));
-	     
-		lluvia = new Lluvia(gota, gotaMala, gotaMultiplicadora, dropSound, rainMusic, multiplicadorMusic);
-	      
-	      // camera
-	      camera = new OrthographicCamera();
-	      camera.setToOrtho(false, 800, 480);
-	      batch = new SpriteBatch();
-	      // creacion del tarro
-	      tarro.crear();
-	      
-	      // creacion de la lluvia
-	      lluvia.crear();
-	}
+        Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.mp3"));
+        bolsa = new Bolsa(new Texture(Gdx.files.internal("bucket.png")), hurtSound);
 
-	@Override
-	public void render(float delta) {
-		//limpia la pantalla con color azul obscuro.
-		ScreenUtils.clear(0, 0, 0.2f, 1);
-		//actualizar matrices de la cámara
-		camera.update();
-		//actualizar 
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		batch.draw(textureFondo, 0, 0, camera.viewportWidth, camera.viewportHeight);
-		//dibujar textos
-		font.draw(batch, "Gotas totales: " + tarro.getPuntos(), 5, 475);
-		font.draw(batch, "Vidas : " + tarro.getVidas(), 670, 475);
-		font.draw(batch, "HighScore : " + game.getHigherScore(), camera.viewportWidth/2-50, 475);
-		
-		if (!tarro.estaHerido()) {
-			// movimiento del tarro desde teclado
-	        tarro.actualizar();        
-			// caida de la lluvia 
-	       if (!lluvia.actualizarMovimiento(tarro)) {
-	    	  //actualizar HigherScore
-	    	  if (game.getHigherScore()<tarro.getPuntos())
-	    		  game.setHigherScore(tarro.getPuntos());  
-	    	  //ir a la ventana de finde juego y destruir la actual
-	    	  game.setScreen(new GameOverScreen(game));
-	    	  dispose();
-	       }
-		}
-		
-		tarro.dibujar(batch);
-		lluvia.actualizarDibujoLluvia(batch);
-		
-		batch.end();
-	}
+        Texture moneda = new Texture(Gdx.files.internal("drop.png"));
+        Texture bomba = new Texture(Gdx.files.internal("dropBad.png"));
+        Texture bonusItem = new Texture(Gdx.files.internal("bonus.png"));
 
-	@Override
-	public void resize(int width, int height) {
-	}
+        Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.mp3"));
+        Sound bonusSound = Gdx.audio.newSound(Gdx.files.internal("multiplicador.mp3"));
 
-	@Override
-	public void show() {
-	  // continuar con sonido de lluvia
-	  lluvia.continuar();
-	}
+        Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+        Music bonusMusic = Gdx.audio.newMusic(Gdx.files.internal("multiplicador.mp3"));
 
-	@Override
-	public void hide() {
+        lluvia = new Lluvia(moneda, bomba, bonusItem, dropSound, bonusSound, rainMusic, bonusMusic);
 
-	}
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 600);
+        batch = new SpriteBatch();
+        bolsa.crear();
+        lluvia.crear();
+    }
 
-	@Override
-	public void pause() {
-		lluvia.pausar();
-		game.setScreen(new PausaScreen(game, this)); 
-	}
+    @Override
+    public void render(float delta) {
+        ScreenUtils.clear(0, 0, 0.2f, 1);
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        batch.draw(textureFondo, 0, 0, camera.viewportWidth, camera.viewportHeight);
+        font.draw(batch, "Monedas totales: " + bolsa.getPuntos(), 5, camera.viewportHeight - 25);
+        font.draw(batch, "Vidas : " + bolsa.getVidas(), camera.viewportWidth - 150, camera.viewportHeight - 25);
+        font.draw(batch, "HighScore : " + game.getHigherScore(), camera.viewportWidth / 2 - 50, camera.viewportHeight - 25);
 
-	@Override
-	public void resume() {
+        if (!bolsa.estaHerido()) {
+            bolsa.actualizar();
+            if (!lluvia.actualizarMovimiento(bolsa)) {
+                if (game.getHigherScore() < bolsa.getPuntos()) {
+                    game.setHigherScore(bolsa.getPuntos());
+                }
+                lluvia.detenerMusica(); 
+                
+                game.setScreen(new GameOverScreen(game));
+                
+                return; 
+            }
+        }
 
-	}
+        bolsa.dibujar(batch);
+        lluvia.actualizarDibujoLluvia(batch);
+        batch.end();
+    }
 
-	@Override
-	public void dispose() {
-      tarro.destruir();
-      lluvia.destruir();
 
-	}
+    @Override
+    public void resize(int width, int height) {
+        camera.setToOrtho(false, width, height);
+    }
 
+    @Override
+    public void show() {
+    }
+
+    @Override
+    public void hide() {
+    }
+
+    @Override
+    public void pause() {
+        lluvia.pausar();
+    }
+
+    @Override
+    public void resume() {
+        lluvia.continuar();
+    }
+
+    @Override
+    public void dispose() {
+        bolsa.destruir();
+        lluvia.destruir();
+        batch.dispose();
+        font.dispose();
+    }
 }

@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -13,15 +14,23 @@ public class GameOverScreen implements Screen {
     private SpriteBatch batch;
     private BitmapFont font;
     private OrthographicCamera camera;
-    Texture textureFondo;
+    private Music gameOverMusic;
+    private Texture textureFondo;
 
     public GameOverScreen(final GameLluviaMenu game) {
         this.game = game;
         this.batch = game.getBatch();
         this.font = game.getFont();
+        this.gameOverMusic = Gdx.audio.newMusic(Gdx.files.internal("MenuFinal.mp3"));
+        this.textureFondo = new Texture(Gdx.files.internal("perdiste.png")); 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
-        textureFondo = new Texture(Gdx.files.internal("perdiste.png")); // Asegúrate de cargar la textura aquí
+    }
+
+    @Override
+    public void show() {
+        gameOverMusic.setLooping(false);
+        gameOverMusic.play();
     }
 
     @Override
@@ -30,10 +39,9 @@ public class GameOverScreen implements Screen {
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        batch.draw(textureFondo, 0, 0, camera.viewportWidth, camera.viewportHeight); // Dibujar la imagen de fondo
-        font.draw(batch, "GAME OVER", camera.viewportWidth / 2 - 50, camera.viewportHeight / 2 + 50);
-        font.draw(batch, "Toca en cualquier lado para reiniciar.", camera.viewportWidth / 2 - 100, camera.viewportHeight / 2 - 50);
-        font.draw(batch, "Puntuación: " + game.getHigherScore(), camera.viewportWidth / 2 - 50, camera.viewportHeight / 2 - 100);
+        batch.draw(textureFondo, 0, 0, camera.viewportWidth, camera.viewportHeight); 
+        
+        font.draw(batch, "Toca en cualquier lado para reiniciar.", 20, camera.viewportHeight / 2 - 50);
         batch.end();
 
         if (Gdx.input.isTouched()) {
@@ -56,15 +64,13 @@ public class GameOverScreen implements Screen {
     }
 
     @Override
-    public void show() {
-    }
-
-    @Override
     public void hide() {
+        gameOverMusic.stop();
     }
 
     @Override
     public void dispose() {
-        textureFondo.dispose(); // Liberar la textura al finalizar
+        gameOverMusic.dispose();
+        textureFondo.dispose();
     }
 }
