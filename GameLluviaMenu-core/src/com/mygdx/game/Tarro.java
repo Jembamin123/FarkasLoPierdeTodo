@@ -12,7 +12,7 @@ public class Tarro implements Actualizable {
     private Rectangle bucket;
     private Texture bucketImage;
     private Sound sonidoHerido;
-    private int vidas = 3;
+    private int vidas = 5;
     private int puntos = 0;
     private int velx = 400;
     private boolean herido = false;

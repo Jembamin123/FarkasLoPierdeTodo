@@ -19,4 +19,10 @@ public class GotaMala extends Gota {
     public int getDaño() {
         return daño;
     }
+
+	@Override
+	protected Texture getTexture() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

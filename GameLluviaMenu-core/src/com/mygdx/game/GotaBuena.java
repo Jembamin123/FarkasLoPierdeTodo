@@ -19,4 +19,10 @@ public class GotaBuena extends Gota {
     public int getPuntos() {
         return puntos;
     }
+
+	@Override
+	protected Texture getTexture() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

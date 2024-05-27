@@ -50,4 +50,6 @@ public abstract class Gota implements Actualizable {
     public float getHeight() {
         return height;
     }
+
+	protected abstract Texture getTexture();
 }

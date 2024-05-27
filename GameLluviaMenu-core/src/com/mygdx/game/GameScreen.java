@@ -17,6 +17,7 @@ public class GameScreen implements Screen {
 	private BitmapFont font;
 	private Tarro tarro;
 	private Lluvia lluvia;
+	Texture textureFondo = new Texture(Gdx.files.internal("fondo.png"));
 
 	   
 	//boolean activo = true;
@@ -33,11 +34,14 @@ public class GameScreen implements Screen {
 	      // load the drop sound effect and the rain background "music" 
          Texture gota = new Texture(Gdx.files.internal("drop.png"));
          Texture gotaMala = new Texture(Gdx.files.internal("dropBad.png"));
+         Texture gotaMultiplicadora = new Texture(Gdx.files.internal("bonus.png"));
          //cambiado de .wav a .mp3
          Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.mp3"));
         
 	     Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-         lluvia = new Lluvia(gota, gotaMala, dropSound, rainMusic);
+         Music multiplicadorMusic = Gdx.audio.newMusic(Gdx.files.internal("multiplicador.mp3"));
+	     
+		lluvia = new Lluvia(gota, gotaMala, gotaMultiplicadora, dropSound, rainMusic, multiplicadorMusic);
 	      
 	      // camera
 	      camera = new OrthographicCamera();
@@ -59,6 +63,7 @@ public class GameScreen implements Screen {
 		//actualizar 
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+		batch.draw(textureFondo, 0, 0, camera.viewportWidth, camera.viewportHeight);
 		//dibujar textos
 		font.draw(batch, "Gotas totales: " + tarro.getPuntos(), 5, 475);
 		font.draw(batch, "Vidas : " + tarro.getVidas(), 670, 475);
